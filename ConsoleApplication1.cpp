@@ -12,7 +12,7 @@ public:
     };//
     //
     void reset(TType* aData) {
-        if (mData = aData) return;
+        if (mData == aData) return;
         if (mData) delete mData;
         mData = aData;
     };//
@@ -25,7 +25,18 @@ public:
     //
     
     TType& operator*() const {
+        if (!mData) {
+            throw std::exception("No data available");
+        }
         return *mData;
+    };//
+    //
+
+    TType* operator ->() const {
+        if (!mData) {
+            throw std::exception("No data available");
+        }
+        return mData;
     };//
     //
 
@@ -41,14 +52,27 @@ struct Node {
     Node() { std::cout << "Node\n"; };
     ~Node() { std::cout << "~Node\n"; };
     void data() { std::cout << "HELLO\n"; };
-    int dataNode{ 10 };
+    int dataNode1{ 10 };
+    float dataNode2{ 5.5 };
 };
 
 int main()
 {
+
     UP<Node> ptrNode(new Node());
     (*ptrNode).data();
-    std::cout << (*ptrNode).dataNode << std::endl;
+    std::cout << (*ptrNode).dataNode1 << std::endl;
+    std::cout << ptrNode->dataNode2 << std::endl;
 
+
+
+    try {
+        UP<Node> ptrNode(nullptr);
+        (*ptrNode);
+    }
+    catch (const std::exception& err) {
+        std::cout << err.what() << std::endl;
+    }
+    
 
 }
